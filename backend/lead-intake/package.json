@@ -1,0 +1,12 @@
+{
+  "name": "tad-lead-intake",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "check": "node --check index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

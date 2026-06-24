@@ -15,6 +15,7 @@ import {
   Zap,
 } from 'lucide-react';
 import logo from './assets/logo.png';
+import AgentsProductPage from './AgentsProductPage';
 import {
   LEGAL_EFFECTIVE_DATE,
   PRIVACY_SECTIONS,
@@ -28,7 +29,7 @@ const COMPANY_NAME = 'Timpson Application Development';
 const PHONE_HREF = 'tel:+14352120693';
 const PHONE_LABEL = '(435) 212-0693';
 
-type Page = 'home' | 'terms' | 'privacy';
+type Page = 'home' | 'agents' | 'terms' | 'privacy';
 
 const getPageFromLocation = (): Page => {
   const normalizedPath = window.location.pathname.replace(/\/+$/, '').toLowerCase() || '/';
@@ -39,6 +40,10 @@ const getPageFromLocation = (): Page => {
 
   if (normalizedPath === '/privacy' || normalizedPath === '/privacy-policy') {
     return 'privacy';
+  }
+
+  if (normalizedPath === '/agents') {
+    return 'agents';
   }
 
   return 'home';
@@ -57,7 +62,7 @@ const isPlainLeftClick = (event: React.MouseEvent<HTMLAnchorElement>) =>
 
 type SiteHeaderProps = {
   page: Page;
-  onNavigate: (path: '/' | '/terms' | '/privacy') => (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  onNavigate: (path: '/' | '/agents' | '/terms' | '/privacy') => (event: React.MouseEvent<HTMLAnchorElement>) => void;
 };
 
 function SiteHeader({ page, onNavigate }: SiteHeaderProps) {
@@ -73,15 +78,41 @@ function SiteHeader({ page, onNavigate }: SiteHeaderProps) {
           <span className="text-xl font-bold text-gray-900 truncate">{COMPANY_NAME}</span>
         </a>
         <nav className="hidden md:flex gap-6 text-sm lg:text-base">
-          <a href={getHomeSectionHref(page, 'services')} className="text-gray-600 hover:text-teal-600 transition">
-            Services
-          </a>
-          <a href={getHomeSectionHref(page, 'pricing')} className="text-gray-600 hover:text-teal-600 transition">
-            Pricing
-          </a>
-          <a href={getHomeSectionHref(page, 'contact')} className="text-gray-600 hover:text-teal-600 transition">
-            Contact
-          </a>
+          {page === 'agents' ? (
+            <>
+              <a href="#system" className="text-gray-600 hover:text-teal-600 transition">
+                System
+              </a>
+              <a href="#process" className="text-gray-600 hover:text-teal-600 transition">
+                Process
+              </a>
+              <a href="#crm" className="text-gray-600 hover:text-teal-600 transition">
+                Workspace
+              </a>
+              <a href="#review" className="text-gray-600 hover:text-teal-600 transition">
+                Review
+              </a>
+            </>
+          ) : (
+            <>
+              <a
+                href="/agents"
+                onClick={onNavigate('/agents')}
+                className="text-gray-600 hover:text-teal-600 transition"
+              >
+                Agents
+              </a>
+              <a href={getHomeSectionHref(page, 'services')} className="text-gray-600 hover:text-teal-600 transition">
+                Services
+              </a>
+              <a href={getHomeSectionHref(page, 'pricing')} className="text-gray-600 hover:text-teal-600 transition">
+                Pricing
+              </a>
+              <a href={getHomeSectionHref(page, 'contact')} className="text-gray-600 hover:text-teal-600 transition">
+                Contact
+              </a>
+            </>
+          )}
           <a href="/terms" onClick={onNavigate('/terms')} className="text-gray-600 hover:text-teal-600 transition">
             Terms
           </a>
@@ -93,10 +124,34 @@ function SiteHeader({ page, onNavigate }: SiteHeaderProps) {
             Privacy
           </a>
         </nav>
-        <a href={PHONE_HREF} className="hidden sm:flex items-center gap-2 text-gray-700 hover:text-teal-600 transition">
-          <Phone className="w-4 h-4" />
-          <span className="font-medium">{PHONE_LABEL}</span>
-        </a>
+        {page !== 'agents' && (
+          <a href={PHONE_HREF} className="hidden sm:flex items-center gap-2 text-gray-700 hover:text-teal-600 transition">
+            <Phone className="w-4 h-4" />
+            <span className="font-medium">{PHONE_LABEL}</span>
+          </a>
+        )}
+        {page === 'agents' && (
+          <div className="hidden lg:flex items-center gap-2">
+            <a
+              href="#review"
+              className="inline-flex min-h-10 items-center justify-center rounded-lg bg-teal-600 px-4 text-sm font-bold text-white transition hover:bg-teal-700"
+            >
+              Schedule
+            </a>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('agents:open-chat'))}
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-teal-200 bg-teal-50 px-3 text-sm font-bold text-teal-700 transition hover:bg-white"
+            >
+              <span>Curious? Ask</span>
+              <span className="leadhand-blob mini" aria-hidden="true">
+                <span className="leadhand-sprout"></span>
+                <span className="leadhand-eye eye-left"></span>
+                <span className="leadhand-eye eye-right"></span>
+              </span>
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );
@@ -104,7 +159,7 @@ function SiteHeader({ page, onNavigate }: SiteHeaderProps) {
 
 type SiteFooterProps = {
   page: Page;
-  onNavigate: (path: '/' | '/terms' | '/privacy') => (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  onNavigate: (path: '/' | '/agents' | '/terms' | '/privacy') => (event: React.MouseEvent<HTMLAnchorElement>) => void;
 };
 
 function SiteFooter({ page, onNavigate }: SiteFooterProps) {
@@ -153,6 +208,13 @@ function SiteFooter({ page, onNavigate }: SiteFooterProps) {
             <nav className="space-y-2">
               <a href="/" onClick={onNavigate('/')} className="block text-gray-400 hover:text-teal-400 transition">
                 Home
+              </a>
+              <a
+                href="/agents"
+                onClick={onNavigate('/agents')}
+                className="block text-gray-400 hover:text-teal-400 transition"
+              >
+                Agent Lead System
               </a>
               <a
                 href={getHomeSectionHref(page, 'services')}
@@ -293,6 +355,7 @@ function App() {
   useEffect(() => {
     const titles: Record<Page, string> = {
       home: `${COMPANY_NAME} | Websites & CRM for Small Businesses`,
+      agents: `Agent Lead Growth System | ${COMPANY_NAME}`,
       terms: `Terms & Conditions | ${COMPANY_NAME}`,
       privacy: `Privacy Policy | ${COMPANY_NAME}`,
     };
@@ -301,7 +364,7 @@ function App() {
   }, [page]);
 
   useEffect(() => {
-    if (page !== 'home') {
+    if (page !== 'home' && page !== 'agents') {
       window.scrollTo({ top: 0, behavior: 'auto' });
       return;
     }
@@ -321,7 +384,7 @@ function App() {
   }, [page]);
 
   const handlePageNavigation =
-    (path: '/' | '/terms' | '/privacy') => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    (path: '/' | '/agents' | '/terms' | '/privacy') => (event: React.MouseEvent<HTMLAnchorElement>) => {
       if (!isPlainLeftClick(event)) {
         return;
       }
@@ -455,7 +518,9 @@ function App() {
       <SiteHeader page={page} onNavigate={handlePageNavigation} />
 
       <main className="pt-20">
-        {page === 'home' ? (
+        {page === 'agents' ? (
+          <AgentsProductPage />
+        ) : page === 'home' ? (
           <>
             <section className="relative bg-gradient-to-br from-teal-50 via-blue-50 to-white py-20 md:py-32">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
