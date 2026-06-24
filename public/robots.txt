@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tad.software/sitemap.xml
