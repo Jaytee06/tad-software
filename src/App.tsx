@@ -28,11 +28,49 @@ const CONTACT_EMAIL = 'contact@timpsonapps.com';
 const COMPANY_NAME = 'Timpson Application Development';
 const PHONE_HREF = 'tel:+14352120693';
 const PHONE_LABEL = '(435) 212-0693';
+const SITE_ORIGIN = 'https://tad.software';
+const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-image.png`;
 
 type Page = 'home' | 'agents' | 'terms' | 'privacy';
+type SitePath = '/' | '/agents/' | '/terms/' | '/privacy/';
+
+type SeoMetadata = {
+  title: string;
+  description: string;
+  canonicalPath: string;
+};
+
+const PAGE_SEO: Record<Page, SeoMetadata> = {
+  home: {
+    title: `${COMPANY_NAME} | Websites & CRM for Small Businesses`,
+    description:
+      'Affordable websites and simple CRM software for small businesses, with USA-based support and practical lead management.',
+    canonicalPath: '/',
+  },
+  agents: {
+    title: `Agent Lead Growth System | ${COMPANY_NAME}`,
+    description:
+      'A human-supervised lead growth system that connects landing pages, CRM workflow, AI communication, ads, and SEO for small businesses.',
+    canonicalPath: '/agents/',
+  },
+  terms: {
+    title: `Terms & Conditions | ${COMPANY_NAME}`,
+    description:
+      'Terms governing access to the Timpson Application Development website and the website, hosting, CRM, and software services provided to customers.',
+    canonicalPath: '/terms/',
+  },
+  privacy: {
+    title: `Privacy Policy | ${COMPANY_NAME}`,
+    description:
+      'Privacy policy covering what information Timpson Application Development collects, how it is used, and the choices available to visitors and customers.',
+    canonicalPath: '/privacy/',
+  },
+};
+
+const normalizePath = (path: string) => path.replace(/\/+$/, '') || '/';
 
 const getPageFromLocation = (): Page => {
-  const normalizedPath = window.location.pathname.replace(/\/+$/, '').toLowerCase() || '/';
+  const normalizedPath = normalizePath(window.location.pathname).toLowerCase();
 
   if (normalizedPath === '/terms' || normalizedPath === '/terms-and-conditions') {
     return 'terms';
@@ -60,9 +98,33 @@ const isPlainLeftClick = (event: React.MouseEvent<HTMLAnchorElement>) =>
   !event.ctrlKey &&
   !event.shiftKey;
 
+function upsertMetaTag(attributeName: 'name' | 'property', attributeValue: string, content: string) {
+  let tag = document.head.querySelector<HTMLMetaElement>(`meta[${attributeName}="${attributeValue}"]`);
+
+  if (!tag) {
+    tag = document.createElement('meta');
+    tag.setAttribute(attributeName, attributeValue);
+    document.head.appendChild(tag);
+  }
+
+  tag.setAttribute('content', content);
+}
+
+function upsertCanonicalLink(href: string) {
+  let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', 'canonical');
+    document.head.appendChild(link);
+  }
+
+  link.setAttribute('href', href);
+}
+
 type SiteHeaderProps = {
   page: Page;
-  onNavigate: (path: '/' | '/agents' | '/terms' | '/privacy') => (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  onNavigate: (path: SitePath) => (event: React.MouseEvent<HTMLAnchorElement>) => void;
 };
 
 function SiteHeader({ page, onNavigate }: SiteHeaderProps) {
@@ -96,8 +158,8 @@ function SiteHeader({ page, onNavigate }: SiteHeaderProps) {
           ) : (
             <>
               <a
-                href="/agents"
-                onClick={onNavigate('/agents')}
+                href="/agents/"
+                onClick={onNavigate('/agents/')}
                 className="text-gray-600 hover:text-teal-600 transition"
               >
                 Agents
@@ -113,12 +175,12 @@ function SiteHeader({ page, onNavigate }: SiteHeaderProps) {
               </a>
             </>
           )}
-          <a href="/terms" onClick={onNavigate('/terms')} className="text-gray-600 hover:text-teal-600 transition">
+          <a href="/terms/" onClick={onNavigate('/terms/')} className="text-gray-600 hover:text-teal-600 transition">
             Terms
           </a>
           <a
-            href="/privacy"
-            onClick={onNavigate('/privacy')}
+            href="/privacy/"
+            onClick={onNavigate('/privacy/')}
             className="text-gray-600 hover:text-teal-600 transition"
           >
             Privacy
@@ -159,7 +221,7 @@ function SiteHeader({ page, onNavigate }: SiteHeaderProps) {
 
 type SiteFooterProps = {
   page: Page;
-  onNavigate: (path: '/' | '/agents' | '/terms' | '/privacy') => (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  onNavigate: (path: SitePath) => (event: React.MouseEvent<HTMLAnchorElement>) => void;
 };
 
 function SiteFooter({ page, onNavigate }: SiteFooterProps) {
@@ -210,8 +272,8 @@ function SiteFooter({ page, onNavigate }: SiteFooterProps) {
                 Home
               </a>
               <a
-                href="/agents"
-                onClick={onNavigate('/agents')}
+                href="/agents/"
+                onClick={onNavigate('/agents/')}
                 className="block text-gray-400 hover:text-teal-400 transition"
               >
                 Agent Lead System
@@ -235,15 +297,15 @@ function SiteFooter({ page, onNavigate }: SiteFooterProps) {
                 Contact
               </a>
               <a
-                href="/terms"
-                onClick={onNavigate('/terms')}
+                href="/terms/"
+                onClick={onNavigate('/terms/')}
                 className="block text-gray-400 hover:text-teal-400 transition"
               >
                 Terms & Conditions
               </a>
               <a
-                href="/privacy"
-                onClick={onNavigate('/privacy')}
+                href="/privacy/"
+                onClick={onNavigate('/privacy/')}
                 className="block text-gray-400 hover:text-teal-400 transition"
               >
                 Privacy Policy
@@ -353,14 +415,23 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const titles: Record<Page, string> = {
-      home: `${COMPANY_NAME} | Websites & CRM for Small Businesses`,
-      agents: `Agent Lead Growth System | ${COMPANY_NAME}`,
-      terms: `Terms & Conditions | ${COMPANY_NAME}`,
-      privacy: `Privacy Policy | ${COMPANY_NAME}`,
-    };
+    const seo = PAGE_SEO[page];
+    const canonicalUrl = `${SITE_ORIGIN}${seo.canonicalPath}`;
 
-    document.title = titles[page];
+    document.title = seo.title;
+    upsertMetaTag('name', 'description', seo.description);
+    upsertMetaTag('name', 'robots', 'index,follow');
+    upsertMetaTag('property', 'og:type', 'website');
+    upsertMetaTag('property', 'og:site_name', COMPANY_NAME);
+    upsertMetaTag('property', 'og:title', seo.title);
+    upsertMetaTag('property', 'og:description', seo.description);
+    upsertMetaTag('property', 'og:url', canonicalUrl);
+    upsertMetaTag('property', 'og:image', DEFAULT_OG_IMAGE);
+    upsertMetaTag('name', 'twitter:card', 'summary_large_image');
+    upsertMetaTag('name', 'twitter:title', seo.title);
+    upsertMetaTag('name', 'twitter:description', seo.description);
+    upsertMetaTag('name', 'twitter:image', DEFAULT_OG_IMAGE);
+    upsertCanonicalLink(canonicalUrl);
   }, [page]);
 
   useEffect(() => {
@@ -384,7 +455,7 @@ function App() {
   }, [page]);
 
   const handlePageNavigation =
-    (path: '/' | '/agents' | '/terms' | '/privacy') => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    (path: SitePath) => (event: React.MouseEvent<HTMLAnchorElement>) => {
       if (!isPlainLeftClick(event)) {
         return;
       }
@@ -392,9 +463,10 @@ function App() {
       event.preventDefault();
 
       const nextPath = path === '/' ? '/' : path;
-      const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
+      const currentPath = normalizePath(window.location.pathname);
+      const normalizedNextPath = normalizePath(nextPath);
 
-      if (currentPath === nextPath && !window.location.hash) {
+      if (currentPath === normalizedNextPath && !window.location.hash) {
         window.scrollTo({ top: 0, behavior: 'auto' });
         return;
       }

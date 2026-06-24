@@ -378,10 +378,10 @@ function AgentsProductPage() {
     let chatSessionId = '';
     let chatBusy = false;
     let chatOffline = false;
-    let externalId = createExternalId();
+    const externalId = createExternalId();
     let submittedLead: SubmittedLead | null = null;
     let lastSyncedPainPoint = '';
-    let chatDraft: { fieldPatches: Record<string, string> } = { fieldPatches: {} };
+    const chatDraft: { fieldPatches: Record<string, string> } = { fieldPatches: {} };
 
     if (form) form.dataset.externalId = externalId;
 
