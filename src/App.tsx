@@ -205,7 +205,7 @@ function SiteHeader({ page, onNavigate }: SiteHeaderProps) {
               onClick={() => window.dispatchEvent(new CustomEvent('agents:open-chat'))}
               className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-teal-200 bg-teal-50 px-3 text-sm font-bold text-teal-700 transition hover:bg-white"
             >
-              <span>Curious? Ask</span>
+              <span>Chat with</span>
               <span className="leadhand-blob mini" aria-hidden="true">
                 <span className="leadhand-sprout"></span>
                 <span className="leadhand-eye eye-left"></span>
