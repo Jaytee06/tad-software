@@ -193,23 +193,12 @@ function serializeGoogleAdsObj(googleAdsObj: GoogleAdsObj) {
     .join('; ');
 }
 
-function pushLeadSubmitEvent(eventName: string, leadId: string, googleAdsObj: GoogleAdsObj) {
+function pushLeadConversionEvent(googleAdsObj: GoogleAdsObj) {
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
-    event: eventName,
-    lead_id: leadId,
-    transaction_id: googleAdsObj.transaction_id || '',
-    google_ads_obj: googleAdsObj,
-  });
-}
-
-function fireGoogleAdsLeadConversion(googleAdsObj: GoogleAdsObj) {
-  const transactionId = googleAdsObj.transaction_id;
-  if (!transactionId || typeof window.gtag !== 'function') return;
-
-  window.gtag('event', 'conversion', {
+    event: 'conversion',
     send_to: GOOGLE_ADS_CONVERSION_SEND_TO,
-    transaction_id: transactionId,
+    transaction_id: googleAdsObj.transaction_id || '',
   });
 }
 
@@ -364,17 +353,17 @@ async function parseLeadCreateResult(response: Response) {
 
   try {
     const data = JSON.parse(text);
-    const failedImport = Array.isArray(data.imports)
-      ? data.imports.find((item: { status?: number }) => Number(item?.status) >= 400)
-      : null;
-    if (failedImport) {
-      throw new Error('CRM import failed');
-    }
     const importedId = Array.isArray(data.imports)
       ? data.imports.find((item: { id?: string }) => item?.id)?.id
       : '';
     const leadId = String(importedId || data._id || data.id || data.leadId || data.lead_id || '');
     if (!leadId) {
+      const failedImport = Array.isArray(data.imports)
+        ? data.imports.find((item: { status?: number }) => Number(item?.status) >= 400)
+        : null;
+      if (failedImport) {
+        throw new Error('CRM import failed');
+      }
       throw new Error('CRM lead response did not include a lead id');
     }
     return leadId;
@@ -812,8 +801,7 @@ function AgentsProductPage() {
         lastSyncedPainPoint = lead.painPoint;
         const persistableChatSessionId = getPersistableChatSessionId(chatSessionId);
         if (persistableChatSessionId) lastSyncedChatSessionId = persistableChatSessionId;
-        pushLeadSubmitEvent('tad_agents_lead_submit', leadId, googleAdsObj);
-        fireGoogleAdsLeadConversion(googleAdsObj);
+        pushLeadConversionEvent(googleAdsObj);
         status.dataset.tone = 'success';
         status.textContent = 'Review request received. You can keep chatting with Leadhand AI to add useful details.';
       } catch (error) {
