@@ -26,6 +26,7 @@ const AI_CHAT_COMPANY_ID =
   import.meta.env.VITE_AI_CHAT_COMPANY_ID || 'timpson-application-development';
 
 const GOOGLE_ADS_STORAGE_KEY = 'tad_google_ads_obj';
+const GOOGLE_ADS_CONVERSION_SEND_TO = 'AW-18000073767/MPMmCOrr0MQcEKeojYdD';
 
 type ChatRole = 'assistant' | 'user';
 
@@ -79,6 +80,7 @@ type GoogleAdsObj = {
 declare global {
   interface Window {
     dataLayer?: Record<string, unknown>[];
+    gtag?: (command: string, eventName: string, eventParams: Record<string, unknown>) => void;
   }
 }
 
@@ -198,6 +200,16 @@ function pushLeadSubmitEvent(eventName: string, leadId: string, googleAdsObj: Go
     lead_id: leadId,
     transaction_id: googleAdsObj.transaction_id || '',
     google_ads_obj: googleAdsObj,
+  });
+}
+
+function fireGoogleAdsLeadConversion(googleAdsObj: GoogleAdsObj) {
+  const transactionId = googleAdsObj.transaction_id;
+  if (!transactionId || typeof window.gtag !== 'function') return;
+
+  window.gtag('event', 'conversion', {
+    send_to: GOOGLE_ADS_CONVERSION_SEND_TO,
+    transaction_id: transactionId,
   });
 }
 
@@ -747,6 +759,7 @@ function AgentsProductPage() {
         };
         lastSyncedPainPoint = lead.painPoint;
         pushLeadSubmitEvent('tad_agents_lead_submit', leadId, googleAdsObj);
+        fireGoogleAdsLeadConversion(googleAdsObj);
         status.dataset.tone = 'success';
         status.textContent = 'Review request received. We will follow up with the next step.';
       } catch (error) {
