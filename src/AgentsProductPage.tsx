@@ -196,6 +196,12 @@ function serializeGoogleAdsObj(googleAdsObj: GoogleAdsObj) {
 function pushLeadConversionEvent(googleAdsObj: GoogleAdsObj) {
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
+    event: 'agents_review_request_submit',
+    page_path: window.location.pathname,
+    traffic_source: new URLSearchParams(window.location.search).get('utm_source') || document.referrer || 'direct',
+    transaction_id: googleAdsObj.transaction_id || '',
+  });
+  window.dataLayer.push({
     event: 'conversion',
     send_to: GOOGLE_ADS_CONVERSION_SEND_TO,
     transaction_id: googleAdsObj.transaction_id || '',

@@ -30,7 +30,7 @@ const COMPANY_NAME = 'Timpson Application Development';
 const PHONE_HREF = 'tel:+14352120693';
 const PHONE_LABEL = '(435) 212-0693';
 const SITE_ORIGIN = 'https://tad.software';
-const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-image.png`;
+const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-ai-automation.png`;
 
 declare global {
   interface Window {
@@ -40,7 +40,16 @@ declare global {
 
 const recordAnalyticsEvent = (event: string, details: Record<string, unknown> = {}) => {
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event, ...details });
+  const params = new URLSearchParams(window.location.search);
+  window.dataLayer.push({
+    event,
+    page_path: window.location.pathname,
+    traffic_source: params.get('utm_source') || document.referrer || 'direct',
+    utm_medium: params.get('utm_medium') || undefined,
+    utm_campaign: params.get('utm_campaign') || undefined,
+    gclid: params.get('gclid') || undefined,
+    ...details,
+  });
 };
 
 type Page = 'home' | 'agents' | 'websites' | 'crm' | 'automation' | 'terms' | 'privacy';
@@ -54,9 +63,9 @@ type SeoMetadata = {
 
 const PAGE_SEO: Record<Page, SeoMetadata> = {
   home: {
-    title: `${COMPANY_NAME} | Websites & CRM for Small Businesses`,
+    title: `Human-Supervised AI Lead Systems | ${COMPANY_NAME}`,
     description:
-      'Affordable websites and simple CRM software for small businesses, with USA-based support and practical lead management.',
+      'Human-supervised AI automation that helps small businesses capture, qualify, follow up with, and manage leads across their website and CRM.',
     canonicalPath: '/',
   },
   agents: {
@@ -76,7 +85,7 @@ const PAGE_SEO: Record<Page, SeoMetadata> = {
     canonicalPath: '/small-business-crm/',
   },
   automation: {
-    title: `AI Lead Automation for Small Businesses | ${COMPANY_NAME}`,
+    title: `AI Automation for Small Business Leads | ${COMPANY_NAME}`,
     description: 'Human-supervised AI lead automation connecting website inquiries, CRM updates, follow-up, qualification, and owner review for small businesses.',
     canonicalPath: '/ai-lead-automation/',
   },
@@ -159,9 +168,9 @@ const SERVICE_PAGES: Record<'websites' | 'crm' | 'automation', ServicePageConten
     ],
   },
   automation: {
-    eyebrow: 'Human-supervised AI automation',
-    title: 'Respond to leads faster without giving up human judgment.',
-    intro: 'TAD connects landing pages, CRM workflow, AI-assisted communication, qualification, and owner review into a controlled lead process for small businesses.',
+    eyebrow: 'AI automation for small business leads',
+    title: 'Turn every new inquiry into a clear, supervised next step.',
+    intro: 'TAD designs human-supervised AI workflows that capture leads, organize context, support qualification, prepare follow-up, update the CRM, and escalate the decisions that still need a person.',
     outcomes: ['Faster response to new inquiries', 'Consistent qualification and record updates', 'Clear escalation when a person should decide'],
     problemTitle: 'Automation works best when the handoffs are designed first.',
     problemCopy: 'Useful AI automation does not mean turning every decision over to a bot. It means removing repetitive steps, keeping records current, and making sure pricing, brand voice, and unusual situations reach the right person.',
@@ -170,10 +179,32 @@ const SERVICE_PAGES: Record<'websites' | 'crm' | 'automation', ServicePageConten
       { title: 'Guided follow-up', copy: 'Prepare or send consistent responses through approved channels while keeping the CRM status and notes current.' },
       { title: 'Human review gates', copy: 'Define where automation stops and a business owner reviews pricing, fit, tone, or exceptions before work moves forward.' },
     ],
+    workflow: [
+      { step: '1', title: 'Capture', copy: 'Collect the inquiry from your website, landing page, chat, campaign, or manual entry with useful source context.' },
+      { step: '2', title: 'Understand', copy: 'Organize the need, timing, contact preference, and missing details according to rules approved by your business.' },
+      { step: '3', title: 'Advance', copy: 'Prepare follow-up, update the CRM, set the next action, and keep routine work moving without losing the conversation.' },
+      { step: '4', title: 'Escalate', copy: 'Pause for a person when pricing, risk, brand voice, fit, or an unusual request requires judgment.' },
+    ],
+    useCases: [
+      'Create a complete CRM record from every website inquiry.',
+      'Respond consistently when leads arrive after hours.',
+      'Ask approved qualification questions before a sales call.',
+      'Keep notes, status, source, and next action current.',
+      'Surface stalled or high-value opportunities for review.',
+    ],
+    guardrails: [
+      'Approved sources, instructions, and response boundaries.',
+      'Human review before custom pricing or commitments.',
+      'Escalation rules for sensitive or unusual situations.',
+      'Visible records of activity and business context.',
+      'A narrow first workflow with measurable success criteria.',
+    ],
     faq: [
       { question: 'Will AI contact customers without approval?', answer: 'The workflow can be designed around your comfort level. Human approval and escalation points can be required wherever judgment or brand risk matters.' },
       { question: 'Do we need a new CRM?', answer: 'Not necessarily. TAD can assess whether to connect your current tools or provide a simpler workspace when the existing setup is the problem.' },
       { question: 'What should we automate first?', answer: 'Start with a repetitive, measurable bottleneck such as lead intake, routing, follow-up reminders, or record updates. Prove the workflow before expanding it.' },
+      { question: 'Is this a generic chatbot?', answer: 'No. A chat interface can be one input, but the larger system connects approved business rules, lead context, CRM actions, follow-up, and explicit human review points.' },
+      { question: 'How do we measure whether it works?', answer: 'Choose operational measures before launch, such as response time, percentage of leads with a next action, missed follow-ups, qualification completeness, or administrative time saved.' },
     ],
   },
 };
@@ -276,12 +307,13 @@ function SiteHeader({ page, onNavigate }: SiteHeaderProps) {
           ) : (
             <>
               <a
-                href="/agents/"
-                onClick={onNavigate('/agents/')}
-                className="text-gray-600 hover:text-teal-600 transition"
+                href="/ai-lead-automation/"
+                onClick={onNavigate('/ai-lead-automation/')}
+                className="font-semibold text-teal-700 hover:text-teal-800 transition"
               >
-                Agents
+                AI Automation
               </a>
+              <a href="/agents/" onClick={onNavigate('/agents/')} className="text-gray-600 hover:text-teal-600 transition">Lead System Demo</a>
               <a href={getHomeSectionHref(page, 'services')} className="text-gray-600 hover:text-teal-600 transition">
                 Services
               </a>
@@ -293,16 +325,6 @@ function SiteHeader({ page, onNavigate }: SiteHeaderProps) {
               </a>
             </>
           )}
-          <a href="/terms/" onClick={onNavigate('/terms/')} className="text-gray-600 hover:text-teal-600 transition">
-            Terms
-          </a>
-          <a
-            href="/privacy/"
-            onClick={onNavigate('/privacy/')}
-            className="text-gray-600 hover:text-teal-600 transition"
-          >
-            Privacy
-          </a>
         </nav>
         {page !== 'agents' && (
           <a href={PHONE_HREF} className="hidden sm:flex items-center gap-2 text-gray-700 hover:text-teal-600 transition">
@@ -526,10 +548,13 @@ function App() {
       const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href]');
       if (!link) return;
 
+      const analyticsEvent = link.dataset.analyticsEvent;
+      if (analyticsEvent) recordAnalyticsEvent(analyticsEvent, { link_url: link.href });
+
       if (link.href.startsWith('tel:')) {
-        recordAnalyticsEvent('phone_link_click', { link_url: link.href });
+        recordAnalyticsEvent('click_to_call', { link_url: link.href });
       } else if (link.href.startsWith('mailto:')) {
-        recordAnalyticsEvent('email_link_click', { link_url: link.href });
+        recordAnalyticsEvent('click_to_email', { link_url: link.href });
       }
     };
 
@@ -568,6 +593,8 @@ function App() {
     upsertMetaTag('name', 'twitter:image', DEFAULT_OG_IMAGE);
     upsertCanonicalLink(canonicalUrl);
     upsertStructuredData(page);
+    if (page === 'automation') recordAnalyticsEvent('ai_automation_page_view');
+    if (page === 'agents') recordAnalyticsEvent('lead_system_demo_view');
   }, [page]);
 
   useEffect(() => {
@@ -736,27 +763,28 @@ function App() {
             <section className="relative bg-gradient-to-br from-teal-50 via-blue-50 to-white py-20 md:py-32">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center max-w-4xl mx-auto">
+                  <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-teal-700">Human-supervised AI automation</p>
                   <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                    Affordable Websites & CRM Software Built for Small Businesses
+                    Turn every new lead into a clear next step.
                   </h1>
                   <p className="text-xl md:text-2xl text-gray-600 mb-10 leading-relaxed">
-                    Professional websites for just{' '}
-                    <span className="font-bold text-teal-600">$99/year</span> and a powerful lead &
-                    customer management system for as little as{' '}
-                    <span className="font-bold text-teal-600">$3 per user per month</span>.
+                    TAD connects your website, CRM, and follow-up into an AI-assisted lead system—so routine work moves faster and important decisions still reach a person.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <a
-                      href="#contact"
+                      href="/ai-lead-automation/"
+                      onClick={handlePageNavigation('/ai-lead-automation/')}
+                      data-analytics-event="ai_automation_cta_click"
                       className="inline-flex items-center justify-center px-8 py-4 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                     >
-                      Get Started
+                      Explore AI Automation
                     </a>
                     <a
-                      href="#contact"
+                      href="/agents/"
+                      onClick={handlePageNavigation('/agents/')}
                       className="inline-flex items-center justify-center px-8 py-4 bg-white text-teal-600 font-semibold rounded-lg hover:bg-gray-50 transition border-2 border-teal-600"
                     >
-                      Request a Demo
+                      See the Lead System
                     </a>
                   </div>
                 </div>
@@ -768,19 +796,19 @@ function App() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                   <div className="flex items-center gap-3">
                     <Check className="w-6 h-6 text-teal-600 flex-shrink-0" />
-                    <span className="text-gray-700 font-medium">No long-term contracts</span>
+                    <span className="text-gray-700 font-medium">Human review at key decisions</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="w-6 h-6 text-teal-600 flex-shrink-0" />
+                    <span className="text-gray-700 font-medium">Website-to-CRM handoff</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="w-6 h-6 text-teal-600 flex-shrink-0" />
+                    <span className="text-gray-700 font-medium">Measurable first workflow</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Check className="w-6 h-6 text-teal-600 flex-shrink-0" />
                     <span className="text-gray-700 font-medium">Built & supported in the USA</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-6 h-6 text-teal-600 flex-shrink-0" />
-                    <span className="text-gray-700 font-medium">Scales with your business</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-6 h-6 text-teal-600 flex-shrink-0" />
-                    <span className="text-gray-700 font-medium">Simple pricing, no surprises</span>
                   </div>
                 </div>
               </div>
