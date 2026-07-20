@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import logo from './assets/logo.png';
 import AgentsProductPage from './AgentsProductPage';
+import ServicePage, { type ServicePageContent } from './ServicePage';
 import {
   LEGAL_EFFECTIVE_DATE,
   PRIVACY_SECTIONS,
@@ -31,8 +32,19 @@ const PHONE_LABEL = '(435) 212-0693';
 const SITE_ORIGIN = 'https://tad.software';
 const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-image.png`;
 
-type Page = 'home' | 'agents' | 'terms' | 'privacy';
-type SitePath = '/' | '/agents/' | '/terms/' | '/privacy/';
+declare global {
+  interface Window {
+    dataLayer?: Array<Record<string, unknown>>;
+  }
+}
+
+const recordAnalyticsEvent = (event: string, details: Record<string, unknown> = {}) => {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event, ...details });
+};
+
+type Page = 'home' | 'agents' | 'websites' | 'crm' | 'automation' | 'terms' | 'privacy';
+type SitePath = '/' | '/agents/' | '/small-business-websites/' | '/small-business-crm/' | '/ai-lead-automation/' | '/terms/' | '/privacy/';
 
 type SeoMetadata = {
   title: string;
@@ -52,6 +64,21 @@ const PAGE_SEO: Record<Page, SeoMetadata> = {
     description:
       'A human-supervised lead growth system that connects landing pages, CRM workflow, AI communication, ads, and SEO for small businesses.',
     canonicalPath: '/agents/',
+  },
+  websites: {
+    title: `Small Business Website Design & Hosting | ${COMPANY_NAME}`,
+    description: 'Affordable, mobile-friendly small business website design, hosting, lead forms, analytics, and practical SEO support from a USA-based team.',
+    canonicalPath: '/small-business-websites/',
+  },
+  crm: {
+    title: `Small Business CRM & Lead Management | ${COMPANY_NAME}`,
+    description: 'Simple CRM and lead management software for small teams that need a clear sales pipeline, customer history, follow-up tracking, and practical support.',
+    canonicalPath: '/small-business-crm/',
+  },
+  automation: {
+    title: `AI Lead Automation for Small Businesses | ${COMPANY_NAME}`,
+    description: 'Human-supervised AI lead automation connecting website inquiries, CRM updates, follow-up, qualification, and owner review for small businesses.',
+    canonicalPath: '/ai-lead-automation/',
   },
   terms: {
     title: `Terms & Conditions | ${COMPANY_NAME}`,
@@ -84,11 +111,72 @@ const getPageFromLocation = (): Page => {
     return 'agents';
   }
 
+  if (normalizedPath === '/small-business-websites') return 'websites';
+  if (normalizedPath === '/small-business-crm') return 'crm';
+  if (normalizedPath === '/ai-lead-automation') return 'automation';
+
   return 'home';
 };
 
 const getHomeSectionHref = (page: Page, sectionId: string) =>
   page === 'home' ? `#${sectionId}` : `/#${sectionId}`;
+
+const SERVICE_PAGES: Record<'websites' | 'crm' | 'automation', ServicePageContent> = {
+  websites: {
+    eyebrow: 'Small business website design',
+    title: 'A professional website built to turn local interest into real inquiries.',
+    intro: 'TAD designs, hosts, and supports fast small-business websites with clear offers, mobile-friendly pages, lead capture, analytics, and the technical SEO foundation search engines expect.',
+    outcomes: ['Clear service pages people can find in search', 'Fast, mobile-friendly experience', 'Lead forms connected to a practical follow-up path'],
+    problemTitle: 'Your website should explain what you do before a visitor has to ask.',
+    problemCopy: 'A good small-business website is more than a digital business card. It should match the questions customers search, establish trust quickly, and make the next step obvious on every device.',
+    deliverables: [
+      { title: 'Search-ready structure', copy: 'Focused pages, descriptive titles, internal links, sitemap support, and structured data create a clean foundation for organic growth.' },
+      { title: 'Conversion-focused design', copy: 'Straightforward messaging, accessible calls to action, and useful contact forms help qualified visitors take the next step.' },
+      { title: 'Hosting and support', copy: 'TAD can handle hosting, routine updates, measurement, and improvements so the site stays useful after launch.' },
+    ],
+    faq: [
+      { question: 'How much does a small business website cost?', answer: 'TAD offers a basic website package starting at $99 per year. Projects that need more pages, custom integrations, e-commerce, or ongoing content are scoped separately.' },
+      { question: 'Is SEO included?', answer: 'Every site includes a sound technical foundation. Competitive SEO usually also requires useful service content, local business signals, measurement, and ongoing improvements.' },
+      { question: 'Can you improve an existing website?', answer: 'Yes. We can review the current site, preserve what works, and improve its message, speed, search structure, lead capture, or integrations.' },
+    ],
+  },
+  crm: {
+    eyebrow: 'CRM for small businesses',
+    title: 'A simple sales pipeline your team will actually keep up to date.',
+    intro: 'Organize new inquiries, customer details, notes, next steps, and follow-up in one small-business CRM built around the way your team sells—not around enterprise software complexity.',
+    outcomes: ['Every lead has an owner and next step', 'Customer context stays in one place', 'Pipeline stages match your actual sales process'],
+    problemTitle: 'Stop losing leads between inboxes, spreadsheets, and sticky notes.',
+    problemCopy: 'A practical CRM gives a small team one reliable view of every opportunity. The goal is not more administration; it is fewer missed follow-ups and a clearer path from inquiry to customer.',
+    deliverables: [
+      { title: 'Lead pipeline', copy: 'Track new inquiries, contacted leads, qualified opportunities, quotes, invoices, wins, and review points with statuses that fit your business.' },
+      { title: 'Customer history', copy: 'Keep contact details, notes, needs, activities, and follow-up timing together so the next conversation has context.' },
+      { title: 'Connected intake', copy: 'Route website and campaign inquiries into the CRM with useful source information instead of copying every lead by hand.' },
+    ],
+    faq: [
+      { question: 'What does the CRM cost?', answer: 'TAD advertises CRM access starting as low as $3 per user per month. Final pricing depends on the setup, integrations, and support your team needs.' },
+      { question: 'Can the pipeline match our process?', answer: 'Yes. Statuses, fields, review points, and follow-up rules can be configured around the way your business already sells.' },
+      { question: 'Can it connect to our website?', answer: 'Yes. Website forms can send inquiries into the CRM, retain source details, and create a consistent follow-up workflow.' },
+    ],
+  },
+  automation: {
+    eyebrow: 'Human-supervised AI automation',
+    title: 'Respond to leads faster without giving up human judgment.',
+    intro: 'TAD connects landing pages, CRM workflow, AI-assisted communication, qualification, and owner review into a controlled lead process for small businesses.',
+    outcomes: ['Faster response to new inquiries', 'Consistent qualification and record updates', 'Clear escalation when a person should decide'],
+    problemTitle: 'Automation works best when the handoffs are designed first.',
+    problemCopy: 'Useful AI automation does not mean turning every decision over to a bot. It means removing repetitive steps, keeping records current, and making sure pricing, brand voice, and unusual situations reach the right person.',
+    deliverables: [
+      { title: 'Lead intake automation', copy: 'Capture form and chat details, preserve campaign context, and create a clean record for follow-up.' },
+      { title: 'Guided follow-up', copy: 'Prepare or send consistent responses through approved channels while keeping the CRM status and notes current.' },
+      { title: 'Human review gates', copy: 'Define where automation stops and a business owner reviews pricing, fit, tone, or exceptions before work moves forward.' },
+    ],
+    faq: [
+      { question: 'Will AI contact customers without approval?', answer: 'The workflow can be designed around your comfort level. Human approval and escalation points can be required wherever judgment or brand risk matters.' },
+      { question: 'Do we need a new CRM?', answer: 'Not necessarily. TAD can assess whether to connect your current tools or provide a simpler workspace when the existing setup is the problem.' },
+      { question: 'What should we automate first?', answer: 'Start with a repetitive, measurable bottleneck such as lead intake, routing, follow-up reminders, or record updates. Prove the workflow before expanding it.' },
+    ],
+  },
+};
 
 const isPlainLeftClick = (event: React.MouseEvent<HTMLAnchorElement>) =>
   event.button === 0 &&
@@ -120,6 +208,36 @@ function upsertCanonicalLink(href: string) {
   }
 
   link.setAttribute('href', href);
+}
+
+function upsertStructuredData(page: Page) {
+  const id = 'page-structured-data';
+  let script = document.getElementById(id) as HTMLScriptElement | null;
+  if (!script) {
+    script = document.createElement('script');
+    script.id = id;
+    script.type = 'application/ld+json';
+    document.head.appendChild(script);
+  }
+
+  const base = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: COMPANY_NAME,
+    url: SITE_ORIGIN,
+    telephone: PHONE_LABEL,
+    email: CONTACT_EMAIL,
+    areaServed: 'United States',
+  };
+  const service = page === 'websites' || page === 'crm' || page === 'automation' ? SERVICE_PAGES[page] : null;
+  script.textContent = JSON.stringify(service ? {
+    '@context': 'https://schema.org',
+    '@graph': [
+      base,
+      { '@type': 'Service', name: PAGE_SEO[page].title.split('|')[0].trim(), provider: { '@type': 'Organization', name: COMPANY_NAME, url: SITE_ORIGIN }, description: PAGE_SEO[page].description, areaServed: 'United States' },
+      { '@type': 'FAQPage', mainEntity: service.faq.map((item) => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })) },
+    ],
+  } : base);
 }
 
 type SiteHeaderProps = {
@@ -401,6 +519,23 @@ function App() {
   const [errorMessage, setErrorMessage] = useState('');
   const [page, setPage] = useState<Page>(() => getPageFromLocation());
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const contactFormStarted = useRef(false);
+
+  useEffect(() => {
+    const handleTrackedLink = (event: MouseEvent) => {
+      const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href]');
+      if (!link) return;
+
+      if (link.href.startsWith('tel:')) {
+        recordAnalyticsEvent('phone_link_click', { link_url: link.href });
+      } else if (link.href.startsWith('mailto:')) {
+        recordAnalyticsEvent('email_link_click', { link_url: link.href });
+      }
+    };
+
+    document.addEventListener('click', handleTrackedLink);
+    return () => document.removeEventListener('click', handleTrackedLink);
+  }, []);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -432,6 +567,7 @@ function App() {
     upsertMetaTag('name', 'twitter:description', seo.description);
     upsertMetaTag('name', 'twitter:image', DEFAULT_OG_IMAGE);
     upsertCanonicalLink(canonicalUrl);
+    upsertStructuredData(page);
   }, [page]);
 
   useEffect(() => {
@@ -548,6 +684,7 @@ function App() {
         throw new Error('Failed to submit form');
       }
 
+      recordAnalyticsEvent('contact_form_submit', { form_name: 'website_inquiry' });
       setSubmitted(true);
       setFormData({
         name: '',
@@ -592,6 +729,8 @@ function App() {
       <main className="pt-20">
         {page === 'agents' ? (
           <AgentsProductPage />
+        ) : page === 'websites' || page === 'crm' || page === 'automation' ? (
+          <ServicePage content={SERVICE_PAGES[page]} phoneHref={PHONE_HREF} />
         ) : page === 'home' ? (
           <>
             <section className="relative bg-gradient-to-br from-teal-50 via-blue-50 to-white py-20 md:py-32">
@@ -672,6 +811,9 @@ function App() {
                       startups, service companies, and local businesses that need a strong online
                       presence without high upfront costs.
                     </p>
+                    <a href="/small-business-websites/" onClick={handlePageNavigation('/small-business-websites/')} className="mb-6 inline-flex font-semibold text-teal-700 hover:text-teal-800">
+                      Explore small business website design →
+                    </a>
                     <div className="space-y-3 mb-8">
                       <div className="flex items-start gap-3">
                         <Check className="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
@@ -733,6 +875,9 @@ function App() {
                       Manage leads, customers, and follow-ups in one simple system designed specifically
                       for small teams.
                     </p>
+                    <a href="/small-business-crm/" onClick={handlePageNavigation('/small-business-crm/')} className="mb-6 inline-flex font-semibold text-blue-700 hover:text-blue-800">
+                      Explore small business CRM software →
+                    </a>
                     <div className="space-y-3 mb-8">
                       <div className="flex items-start gap-3">
                         <Check className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
@@ -763,6 +908,17 @@ function App() {
                     </a>
                   </div>
                 </div>
+              </div>
+            </section>
+
+            <section className="bg-gray-900 py-16 text-white">
+              <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 px-4 sm:px-6 md:flex-row md:items-center lg:px-8">
+                <div className="max-w-3xl">
+                  <p className="mb-2 text-sm font-bold uppercase tracking-[0.18em] text-teal-400">AI lead automation</p>
+                  <h2 className="mb-3 text-3xl font-bold">Connect your website, CRM, and follow-up without losing human oversight.</h2>
+                  <p className="text-lg leading-relaxed text-gray-300">Use controlled automation to capture inquiries, keep records current, and escalate the decisions that still need a person.</p>
+                </div>
+                <a href="/ai-lead-automation/" onClick={handlePageNavigation('/ai-lead-automation/')} className="whitespace-nowrap rounded-lg bg-teal-500 px-6 py-3 font-bold text-gray-950 hover:bg-teal-400">Explore AI automation →</a>
               </div>
             </section>
 
@@ -939,7 +1095,15 @@ function App() {
                       <p className="text-gray-600">We&apos;ll be in touch with you shortly.</p>
                     </div>
                   ) : (
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form
+                      onSubmit={handleSubmit}
+                      onFocus={() => {
+                        if (contactFormStarted.current) return;
+                        contactFormStarted.current = true;
+                        recordAnalyticsEvent('contact_form_start', { form_name: 'website_inquiry' });
+                      }}
+                      className="space-y-6"
+                    >
                       {errorMessage && (
                         <div className="bg-red-50 text-red-600 p-4 rounded-lg text-sm">{errorMessage}</div>
                       )}

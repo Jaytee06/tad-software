@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/postbuild-agents-route.mjs",
+    "build": "vite build && node scripts/postbuild-agents-route.mjs && node scripts/audit-production-routes.mjs",
+    "audit:routes": "node scripts/audit-production-routes.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json"

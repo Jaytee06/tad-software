@@ -80,7 +80,7 @@ type GoogleAdsObj = {
 declare global {
   interface Window {
     dataLayer?: Record<string, unknown>[];
-    gtag?: (command: string, eventName: string, eventParams: Record<string, unknown>) => void;
+    gtag?: (...args: unknown[]) => void;
   }
 }
 
@@ -241,7 +241,7 @@ function readLeadForm(form: HTMLFormElement): LeadFormSnapshot {
     website: normalizeWebsite(getFormValue(form, 'website')),
     painPoint: getFormValue(form, 'painPoint'),
     contactPreference: getFormValue(form, 'contactPreference') || 'Text',
-    saleStatus: 'New Inquiry',
+    saleStatus: 'New',
     followupRequested: true,
   };
 }
