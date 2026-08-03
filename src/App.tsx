@@ -103,6 +103,16 @@ const PAGE_SEO: Record<Page, SeoMetadata> = {
   },
 };
 
+const PAGE_LABELS: Record<Page, string> = {
+  home: 'Home',
+  agents: 'Agent Lead Growth System',
+  websites: 'Small Business Website Design & Hosting',
+  crm: 'Small Business CRM & Lead Management',
+  automation: 'AI Automation for Small Business Leads',
+  terms: 'Terms & Conditions',
+  privacy: 'Privacy Policy',
+};
+
 const normalizePath = (path: string) => path.replace(/\/+$/, '') || '/';
 
 const getPageFromLocation = (): Page => {
@@ -143,6 +153,25 @@ const SERVICE_PAGES: Record<'websites' | 'crm' | 'automation', ServicePageConten
       { title: 'Conversion-focused design', copy: 'Straightforward messaging, accessible calls to action, and useful contact forms help qualified visitors take the next step.' },
       { title: 'Hosting and support', copy: 'TAD can handle hosting, routine updates, measurement, and improvements so the site stays useful after launch.' },
     ],
+    fitTitle: 'Best for small businesses that need more than a brochure site.',
+    fitCopy: 'This page is a strong fit when your business needs a website that answers buyer questions clearly, supports lead capture, and gives future CRM or automation work a solid foundation.',
+    fitBullets: [
+      'You need service pages that match what prospects search before they call.',
+      'You want clearer calls to action, trust signals, and form paths on mobile and desktop.',
+      'You need a website that can connect cleanly to a CRM or lead automation workflow later.',
+    ],
+    processTitle: 'What a website engagement usually includes',
+    processCopy: 'Most projects begin by clarifying the offer, the best next action for a visitor, and the core pages that need to earn trust before any design polish is added.',
+    processSteps: [
+      { title: 'Clarify the offer', copy: 'Define the services, buyer questions, and trust points the site needs to answer before people reach out.' },
+      { title: 'Build the core pages', copy: 'Launch the homepage, service pages, contact path, and technical SEO basics that search engines can crawl directly.' },
+      { title: 'Connect measurement', copy: 'Track form activity, traffic sources, and follow-up paths so later improvements are based on evidence instead of guesswork.' },
+    ],
+    relatedLinks: [
+      { href: '/small-business-crm/', title: 'Connect the site to a CRM', copy: 'Send every inquiry into a pipeline with owners, notes, statuses, and next actions.' },
+      { href: '/ai-lead-automation/', title: 'Add human-supervised automation', copy: 'Use AI for intake and follow-up support without removing review points that still need judgment.' },
+      { href: '/agents/', title: 'See the full lead system', copy: 'Explore how landing pages, CRM workflow, AI, and sales follow-up fit together in one operating loop.' },
+    ],
     faq: [
       { question: 'How much does a small business website cost?', answer: 'TAD offers a basic website package starting at $99 per year. Projects that need more pages, custom integrations, e-commerce, or ongoing content are scoped separately.' },
       { question: 'Is SEO included?', answer: 'Every site includes a sound technical foundation. Competitive SEO usually also requires useful service content, local business signals, measurement, and ongoing improvements.' },
@@ -161,6 +190,25 @@ const SERVICE_PAGES: Record<'websites' | 'crm' | 'automation', ServicePageConten
       { title: 'Customer history', copy: 'Keep contact details, notes, needs, activities, and follow-up timing together so the next conversation has context.' },
       { title: 'Connected intake', copy: 'Route website and campaign inquiries into the CRM with useful source information instead of copying every lead by hand.' },
     ],
+    fitTitle: 'Best for teams that need one shared system for follow-up.',
+    fitCopy: 'A small-business CRM works best when leads are already arriving from a website, referrals, or campaigns and the team needs a cleaner handoff than inboxes and spreadsheets can provide.',
+    fitBullets: [
+      'You want every inquiry to have an owner, a status, and a scheduled next step.',
+      'You need customer notes, quote context, and follow-up history in one place.',
+      'You want the CRM to match how your business already sells instead of forcing enterprise complexity.',
+    ],
+    processTitle: 'How CRM work usually starts',
+    processCopy: 'The first pass is usually simple: define the real pipeline stages, identify which fields matter, and make sure new inquiries arrive with enough context to move forward.',
+    processSteps: [
+      { title: 'Map the pipeline', copy: 'Choose statuses that reflect your actual sales process, from new inquiry through quote, invoice, win, or loss.' },
+      { title: 'Capture the right context', copy: 'Store the contact details, need, timing, notes, and source information that make the next conversation more useful.' },
+      { title: 'Tighten follow-up', copy: 'Set owners, reminders, and review points so fewer leads stall between the first inquiry and the next decision.' },
+    ],
+    relatedLinks: [
+      { href: '/small-business-websites/', title: 'Feed the CRM from the website', copy: 'Start with service pages and lead forms that collect better context before the record ever reaches your team.' },
+      { href: '/ai-lead-automation/', title: 'Automate the repetitive steps', copy: 'Use AI to support intake, updates, reminders, and approved follow-up while keeping the CRM current.' },
+      { href: '/agents/', title: 'See the operating model', copy: 'View the full landing-page-to-CRM workflow, including where human review belongs.' },
+    ],
     faq: [
       { question: 'What does the CRM cost?', answer: 'TAD advertises CRM access starting as low as $3 per user per month. Final pricing depends on the setup, integrations, and support your team needs.' },
       { question: 'Can the pipeline match our process?', answer: 'Yes. Statuses, fields, review points, and follow-up rules can be configured around the way your business already sells.' },
@@ -178,6 +226,25 @@ const SERVICE_PAGES: Record<'websites' | 'crm' | 'automation', ServicePageConten
       { title: 'Lead intake automation', copy: 'Capture form and chat details, preserve campaign context, and create a clean record for follow-up.' },
       { title: 'Guided follow-up', copy: 'Prepare or send consistent responses through approved channels while keeping the CRM status and notes current.' },
       { title: 'Human review gates', copy: 'Define where automation stops and a business owner reviews pricing, fit, tone, or exceptions before work moves forward.' },
+    ],
+    fitTitle: 'Best for businesses that already know where leads get stuck.',
+    fitCopy: 'Automation works best when there is a real bottleneck to fix, such as slow response times, missing CRM updates, after-hours inquiries, or inconsistent qualification before a person steps in.',
+    fitBullets: [
+      'You can identify a repetitive step that happens often enough to measure before and after.',
+      'You want faster responses and cleaner records without handing every decision to a bot.',
+      'You need explicit review gates for pricing, tone, fit, exceptions, or unusual requests.',
+    ],
+    processTitle: 'How a first automation rollout usually begins',
+    processCopy: 'The safest launches start narrow. Define one workflow, one success metric, and one point where a person can still review the decision before the automation expands.',
+    processSteps: [
+      { title: 'Choose the bottleneck', copy: 'Start with one repeatable step such as lead intake, routing, follow-up reminders, or record updates.' },
+      { title: 'Define the guardrails', copy: 'Set approved instructions, escalation rules, response boundaries, and the exact points where owner review is required.' },
+      { title: 'Measure and expand carefully', copy: 'Track response speed, next-action coverage, and exception volume before broadening the workflow.' },
+    ],
+    relatedLinks: [
+      { href: '/small-business-websites/', title: 'Strengthen the intake point', copy: 'Automation works better when the website collects the right details and sets up the next step clearly.' },
+      { href: '/small-business-crm/', title: 'Keep the CRM current', copy: 'Use a pipeline that can receive source data, statuses, notes, and follow-up timing from the workflow.' },
+      { href: '/agents/', title: 'See the end-to-end system', copy: 'Review how traffic, landing pages, AI-assisted follow-up, CRM updates, and owner review connect.' },
     ],
     workflow: [
       { step: '1', title: 'Capture', copy: 'Collect the inquiry from your website, landing page, chat, campaign, or manual entry with useful source context.' },
@@ -261,14 +328,39 @@ function upsertStructuredData(page: Page) {
     areaServed: 'United States',
   };
   const service = page === 'websites' || page === 'crm' || page === 'automation' ? SERVICE_PAGES[page] : null;
-  script.textContent = JSON.stringify(service ? {
-    '@context': 'https://schema.org',
-    '@graph': [
-      base,
-      { '@type': 'Service', name: PAGE_SEO[page].title.split('|')[0].trim(), provider: { '@type': 'Organization', name: COMPANY_NAME, url: SITE_ORIGIN }, description: PAGE_SEO[page].description, areaServed: 'United States' },
-      { '@type': 'FAQPage', mainEntity: service.faq.map((item) => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })) },
-    ],
-  } : base);
+  const graph: Record<string, unknown>[] = [base];
+
+  if (page !== 'home') {
+    graph.push({
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_ORIGIN}/` },
+        { '@type': 'ListItem', position: 2, name: PAGE_LABELS[page], item: `${SITE_ORIGIN}${PAGE_SEO[page].canonicalPath}` },
+      ],
+    });
+  }
+
+  if (service) {
+    graph.push(
+      {
+        '@type': 'Service',
+        name: PAGE_SEO[page].title.split('|')[0].trim(),
+        provider: { '@type': 'Organization', name: COMPANY_NAME, url: SITE_ORIGIN },
+        description: PAGE_SEO[page].description,
+        areaServed: 'United States',
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: service.faq.map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: { '@type': 'Answer', text: item.answer },
+        })),
+      }
+    );
+  }
+
+  script.textContent = JSON.stringify(graph.length > 1 ? { '@context': 'https://schema.org', '@graph': graph } : base);
 }
 
 type SiteHeaderProps = {

@@ -8,6 +8,13 @@ export type ServicePageContent = {
   problemTitle: string;
   problemCopy: string;
   deliverables: Array<{ title: string; copy: string }>;
+  fitTitle: string;
+  fitCopy: string;
+  fitBullets: string[];
+  processTitle: string;
+  processCopy: string;
+  processSteps: Array<{ title: string; copy: string }>;
+  relatedLinks: Array<{ href: string; title: string; copy: string }>;
   faq: Array<{ question: string; answer: string }>;
   workflow?: Array<{ step: string; title: string; copy: string }>;
   guardrails?: string[];
@@ -68,6 +75,40 @@ export default function ServicePage({ content, phoneHref }: ServicePageProps) {
         </div>
       </section>
 
+      <section className="bg-white py-20">
+        <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 md:grid-cols-2 lg:px-8">
+          <div>
+            <p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-teal-700">Best fit</p>
+            <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">{content.fitTitle}</h2>
+            <p className="mb-6 text-lg leading-relaxed text-gray-600">{content.fitCopy}</p>
+            <ul className="space-y-4">
+              {content.fitBullets.map((item) => (
+                <li key={item} className="flex gap-3 text-gray-700">
+                  <Check className="mt-0.5 h-5 w-5 flex-none text-teal-600" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-2xl border border-gray-200 bg-gray-50 p-8 shadow-sm">
+            <p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-teal-700">Implementation path</p>
+            <h2 className="mb-4 text-3xl font-bold text-gray-900">{content.processTitle}</h2>
+            <p className="mb-6 text-lg leading-relaxed text-gray-600">{content.processCopy}</p>
+            <div className="space-y-4">
+              {content.processSteps.map((item, index) => (
+                <article key={item.title} className="rounded-xl border border-gray-200 bg-white p-5">
+                  <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-teal-100 font-bold text-teal-700">
+                    {index + 1}
+                  </div>
+                  <h3 className="mb-2 text-xl font-bold text-gray-900">{item.title}</h3>
+                  <p className="leading-relaxed text-gray-600">{item.copy}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {content.workflow && content.guardrails && content.useCases && (
         <>
           <section className="bg-gray-950 py-20 text-white">
@@ -108,6 +149,35 @@ export default function ServicePage({ content, phoneHref }: ServicePageProps) {
           </section>
         </>
       )}
+
+      <section className="bg-gray-50 py-20">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 max-w-3xl">
+            <p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-teal-700">Related next steps</p>
+            <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
+              See how this fits into the rest of the lead system.
+            </h2>
+            <p className="text-lg leading-relaxed text-gray-600">
+              The strongest small-business lead systems connect the website, CRM, automation, and review process instead of treating them as isolated purchases.
+            </p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {content.relatedLinks.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="group rounded-2xl border border-gray-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-teal-200 hover:shadow-lg"
+              >
+                <h3 className="mb-3 text-2xl font-bold text-gray-900">{item.title}</h3>
+                <p className="mb-5 leading-relaxed text-gray-600">{item.copy}</p>
+                <span className="inline-flex items-center gap-2 font-semibold text-teal-700 transition group-hover:text-teal-800">
+                  Explore this page <ArrowRight className="h-5 w-5" />
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="bg-white py-20">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
