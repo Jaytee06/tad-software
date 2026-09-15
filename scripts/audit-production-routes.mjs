@@ -38,6 +38,7 @@ const homeHtml = readFileSync(join(dist, 'index.html'), 'utf8');
 const websiteHtml = readFileSync(join(dist, 'small-business-websites', 'index.html'), 'utf8');
 const crmHtml = readFileSync(join(dist, 'small-business-crm', 'index.html'), 'utf8');
 const automationHtml = readFileSync(join(dist, 'ai-lead-automation', 'index.html'), 'utf8');
+const howWeWorkHtml = readFileSync(join(dist, 'how-we-work', 'index.html'), 'utf8');
 if (!homeHtml.includes('<title>Human-Supervised AI Lead Systems | Timpson Application Development</title>')) errors.push('/: AI-first homepage title missing');
 if (!automationHtml.includes('<title>AI Automation for Small Business Leads | Timpson Application Development</title>')) errors.push('/ai-lead-automation/: required title missing');
 for (const [pathname, html] of [['/small-business-websites/', websiteHtml], ['/small-business-crm/', crmHtml], ['/ai-lead-automation/', automationHtml]]) {
@@ -52,6 +53,8 @@ const workflowPositions = ['Capture', 'Understand', 'Advance', 'Escalate'].map((
 if (workflowPositions.some((position) => position < 0) || !workflowPositions.every((position, index) => index === 0 || position > workflowPositions[index - 1])) errors.push('/ai-lead-automation/: workflow stages missing or out of order');
 if (!automationHtml.includes('Human-supervised by design')) errors.push('/ai-lead-automation/: visible guardrails missing');
 if (!automationHtml.includes('A chatbot may be one input, but it is not the entire system.')) errors.push('/ai-lead-automation/: chatbot scope explanation missing');
+if (!howWeWorkHtml.includes('Timpson Drafting &amp; Design') && !howWeWorkHtml.includes('Timpson Drafting & Design')) errors.push('/how-we-work/: approved managed-company evidence missing');
+if (!howWeWorkHtml.includes('does not publish private client records')) errors.push('/how-we-work/: evidence boundary missing');
 for (const warning of warnings) console.warn(`AUDIT WARNING: ${warning}`);
 if (errors.length) { for (const error of [...new Set(errors)]) console.error(`AUDIT ERROR: ${error}`); process.exit(1); }
 console.log(`Audited ${urls.length} canonical routes: no blocking errors (${warnings.length} editorial warnings).`);

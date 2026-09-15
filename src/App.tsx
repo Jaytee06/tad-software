@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import logo from './assets/logo.png';
 import AgentsProductPage from './AgentsProductPage';
+import HowWeWorkPage from './HowWeWorkPage';
 import ServicePage, { type ServicePageContent } from './ServicePage';
 import {
   LEGAL_EFFECTIVE_DATE,
@@ -52,8 +53,8 @@ const recordAnalyticsEvent = (event: string, details: Record<string, unknown> = 
   });
 };
 
-type Page = 'home' | 'agents' | 'websites' | 'crm' | 'automation' | 'terms' | 'privacy';
-type SitePath = '/' | '/agents/' | '/small-business-websites/' | '/small-business-crm/' | '/ai-lead-automation/' | '/terms/' | '/privacy/';
+type Page = 'home' | 'agents' | 'websites' | 'crm' | 'automation' | 'howWeWork' | 'terms' | 'privacy';
+type SitePath = '/' | '/agents/' | '/small-business-websites/' | '/small-business-crm/' | '/ai-lead-automation/' | '/how-we-work/' | '/terms/' | '/privacy/';
 
 type SeoMetadata = {
   title: string;
@@ -89,6 +90,11 @@ const PAGE_SEO: Record<Page, SeoMetadata> = {
     description: 'Human-supervised AI lead automation connecting website inquiries, CRM updates, follow-up, qualification, and owner review for small businesses.',
     canonicalPath: '/ai-lead-automation/',
   },
+  howWeWork: {
+    title: `How TAD Builds Managed Lead Systems | ${COMPANY_NAME}`,
+    description: 'See how TAD connects website intake, CRM workflow, AI-assisted support, and human review without relying on generic automation promises.',
+    canonicalPath: '/how-we-work/',
+  },
   terms: {
     title: `Terms & Conditions | ${COMPANY_NAME}`,
     description:
@@ -109,9 +115,16 @@ const PAGE_LABELS: Record<Page, string> = {
   websites: 'Small Business Website Design & Hosting',
   crm: 'Small Business CRM & Lead Management',
   automation: 'AI Automation for Small Business Leads',
+  howWeWork: 'How TAD Works',
   terms: 'Terms & Conditions',
   privacy: 'Privacy Policy',
 };
+
+const HOW_WE_WORK_FAQ = [
+  ['Will this replace the people on our team?', 'No. TAD automates repeatable support work while people remain responsible for judgment, commitments, and exceptions.'],
+  ['Can you promise more leads or sales?', 'No. Measurable operating improvements can be defined, but traffic, fit, timing, sales process, and market conditions affect outcomes.'],
+  ['What is the best first project?', 'Start with one visible bottleneck such as a weak intake path, missing follow-up, or a CRM handoff that loses context.'],
+] as const;
 
 const normalizePath = (path: string) => path.replace(/\/+$/, '') || '/';
 
@@ -133,6 +146,7 @@ const getPageFromLocation = (): Page => {
   if (normalizedPath === '/small-business-websites') return 'websites';
   if (normalizedPath === '/small-business-crm') return 'crm';
   if (normalizedPath === '/ai-lead-automation') return 'automation';
+  if (normalizedPath === '/how-we-work') return 'howWeWork';
 
   return 'home';
 };
@@ -360,6 +374,17 @@ function upsertStructuredData(page: Page) {
     );
   }
 
+  if (page === 'howWeWork') {
+    graph.push({
+      '@type': 'FAQPage',
+      mainEntity: HOW_WE_WORK_FAQ.map(([question, answer]) => ({
+        '@type': 'Question',
+        name: question,
+        acceptedAnswer: { '@type': 'Answer', text: answer },
+      })),
+    });
+  }
+
   script.textContent = JSON.stringify(graph.length > 1 ? { '@context': 'https://schema.org', '@graph': graph } : base);
 }
 
@@ -406,6 +431,7 @@ function SiteHeader({ page, onNavigate }: SiteHeaderProps) {
                 AI Automation
               </a>
               <a href="/agents/" onClick={onNavigate('/agents/')} className="text-gray-600 hover:text-teal-600 transition">Lead System Demo</a>
+              <a href="/how-we-work/" onClick={onNavigate('/how-we-work/')} className="text-gray-600 hover:text-teal-600 transition">How TAD Works</a>
               <a href={getHomeSectionHref(page, 'services')} className="text-gray-600 hover:text-teal-600 transition">
                 Services
               </a>
@@ -509,6 +535,13 @@ function SiteFooter({ page, onNavigate }: SiteFooterProps) {
                 className="block text-gray-400 hover:text-teal-400 transition"
               >
                 Agent Lead System
+              </a>
+              <a
+                href="/how-we-work/"
+                onClick={onNavigate('/how-we-work/')}
+                className="block text-gray-400 hover:text-teal-400 transition"
+              >
+                How TAD Works
               </a>
               <a
                 href={getHomeSectionHref(page, 'services')}
@@ -848,6 +881,8 @@ function App() {
       <main className="pt-20">
         {page === 'agents' ? (
           <AgentsProductPage />
+        ) : page === 'howWeWork' ? (
+          <HowWeWorkPage onNavigate={handlePageNavigation} />
         ) : page === 'websites' || page === 'crm' || page === 'automation' ? (
           <ServicePage content={SERVICE_PAGES[page]} phoneHref={PHONE_HREF} />
         ) : page === 'home' ? (

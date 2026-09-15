@@ -28,6 +28,27 @@ const staticContentByPath = {
       ['Improve the whole path', 'Measure what happens between traffic, inquiry, qualification, and sale.', '/small-business-websites/'],
     ],
   },
+  '/how-we-work/': {
+    eyebrow: 'A transparent implementation model',
+    h1: 'A managed lead system is built through verified steps, not AI promises.',
+    intro: 'TAD connects website pages, lead capture, CRM workflow, and human review into one accountable path. The model is used in TAD managed-company work, including the approved Timpson Drafting & Design case-study example. This page does not publish private client records, revenue, sales counts, or performance guarantees.',
+    sections: [
+      ['Make the offer and next step clear', 'Start with the buyer question, the service being offered, and the smallest useful action a visitor can take.', '/small-business-websites/'],
+      ['Keep the lead context intact', 'Preserve source, need, timing, notes, ownership, and the next action in the CRM.', '/small-business-crm/'],
+      ['Put a person at judgment points', 'Automation can prepare and organize, while pricing, fit, sensitive situations, and commitments remain accountable human decisions.', '/ai-lead-automation/'],
+      ['Verify changes in the live system', 'Pages, forms, CRM handoffs, and search signals are checked after release so the workflow remains measured and reviewable.', '/agents/'],
+    ],
+    relatedLinks: [
+      ['Website and intake', 'Build pages that answer buyer questions and collect useful context.', '/small-business-websites/'],
+      ['CRM and ownership', 'Keep follow-up, notes, next actions, and accountability in one place.', '/small-business-crm/'],
+      ['Lead system demo', 'See how the connected workflow is designed around human review.', '/agents/'],
+    ],
+    faqs: [
+      ['Will this replace the people on our team?', 'No. TAD automates repeatable support work while people remain responsible for judgment, commitments, and exceptions.'],
+      ['Can you promise more leads or sales?', 'No. Measurable operating improvements can be defined, but traffic, fit, timing, sales process, and market conditions affect outcomes.'],
+      ['What is the best first project?', 'Start with one visible bottleneck such as a weak intake path, missing follow-up, or a CRM handoff that loses context.'],
+    ],
+  },
   '/small-business-websites/': {
     eyebrow: 'Small business website design',
     h1: 'A professional website built to turn local interest into real inquiries.',
@@ -158,6 +179,13 @@ const routeDefinitions = [
     title: 'Agent Lead Growth System | Timpson Application Development',
     description:
       'A human-supervised lead growth system that connects landing pages, CRM workflow, AI communication, ads, and SEO for small businesses.',
+    aliases: [],
+  },
+  {
+    output: 'how-we-work/index.html',
+    canonicalPath: '/how-we-work/',
+    title: 'How TAD Builds Managed Lead Systems | Timpson Application Development',
+    description: 'See how TAD connects website intake, CRM workflow, AI-assisted support, and human review without relying on generic automation promises.',
     aliases: [],
   },
   {
@@ -307,7 +335,7 @@ function applyInitialContent(html, route) {
     ? `<section><h2>See how this fits into the rest of the lead system</h2><div class="static-service-grid">${relatedLinks}</div></section>`
     : '';
   const faqSection = faqs ? `<section><h2>Frequently asked questions</h2>${faqs}</section>` : '';
-  const markup = `<div id="root"><div class="static-route-fallback"><header><a href="/">Timpson Application Development</a><nav aria-label="Primary"><a href="/ai-lead-automation/">AI automation</a><a href="/agents/">Lead system demo</a><a href="/small-business-websites/">Websites</a><a href="/small-business-crm/">CRM</a><a href="/#contact">Contact</a></nav></header><main><p class="eyebrow">${escapeText(content.eyebrow)}</p><h1>${escapeText(content.h1)}</h1><p>${escapeText(content.intro)}</p>${sections ? `<section class="static-service-grid">${sections}</section>` : ''}${fitSection}${processSection}${workflowSection}${relatedSection}${faqSection}<p><a href="/#contact">Discuss your project with TAD</a> or call <a href="tel:+14352120693">(435) 212-0693</a>.</p></main><footer><a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a> · <a href="mailto:contact@timpsonapps.com">contact@timpsonapps.com</a></footer></div></div>`;
+  const markup = `<div id="root"><div class="static-route-fallback"><header><a href="/">Timpson Application Development</a><nav aria-label="Primary"><a href="/ai-lead-automation/">AI automation</a><a href="/agents/">Lead system demo</a><a href="/how-we-work/">How TAD works</a><a href="/small-business-websites/">Websites</a><a href="/small-business-crm/">CRM</a><a href="/#contact">Contact</a></nav></header><main><p class="eyebrow">${escapeText(content.eyebrow)}</p><h1>${escapeText(content.h1)}</h1><p>${escapeText(content.intro)}</p>${sections ? `<section class="static-service-grid">${sections}</section>` : ''}${fitSection}${processSection}${workflowSection}${relatedSection}${faqSection}<p><a href="/#contact">Discuss your project with TAD</a> or call <a href="tel:+14352120693">(435) 212-0693</a>.</p></main><footer><a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a> · <a href="mailto:contact@timpsonapps.com">contact@timpsonapps.com</a></footer></div></div>`;
   return html.replace('<div id="root"></div>', markup);
 }
 
